@@ -5,6 +5,14 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GantzEXE", "GantzEXE\GantzEXE.csproj", "{F8B5C4FC-3FB0-468E-9242-D07DA5F1FB1F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0983125F-7F06-45BF-BD2D-3F9B777A3B1E}"
+	ProjectSection(SolutionItems) = preProject
+		GantzEXE\Board.cs = GantzEXE\Board.cs
+		GantzEXE\CommMapper.cs = GantzEXE\CommMapper.cs
+		GantzEXE\Point.cs = GantzEXE\Point.cs
+		GantzEXE\Program.cs = GantzEXE\Program.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

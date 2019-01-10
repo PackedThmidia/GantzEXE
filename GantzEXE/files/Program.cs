@@ -13,7 +13,6 @@ namespace GantZ
             //create board
             Board board = new Board(int.Parse(size));
             mapper.SendOK();
-
             //listen fo obstacles
             string obstacles = Console.In.ReadLine();
             board.InitBoardObstacles(mapper.CreatePointListFromMessage(obstacles));
@@ -34,16 +33,11 @@ namespace GantZ
             while (true)
             {
                 string opponentMove = Console.In.ReadLine();
-                if (opponentMove == "start") { 
-                    //board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
-                    Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
-                }
-                else
-                {
-                    board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
-                    Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
-                }
-                    
+                if (opponentMove == "start") continue;
+                board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
+                //for now random move
+                Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
+
                 //fill board with opp movements
                 //find best move
                 //send best move
