@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-namespace GantZ
+namespace GantzEXE
 {
     class CommMaper
     {
@@ -26,6 +26,10 @@ namespace GantZ
                 message += "{" + p.X + ";" + p.Y + "},";
             }
             return message.TrimEnd(','); ;
+        }
+        public string CreateMessageFromMove(Move move)
+        {
+            return "{" + move.p1.X + ";" + move.p1.Y + "},{" + move.p2.X + ";" + move.p2.Y + "}";
         }
         public List<Point> CreatePointListFromMessage(string message)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-namespace GantZ
+namespace GantzEXE
 {
     class Board
     {
@@ -9,6 +9,8 @@ namespace GantZ
         int size;
         List<Point> occupiedCells = new List<Point>();
         List<Point> freeCells = new List<Point>();
+        List<Point> freeBlockedCells = new List<Point>();
+        List<Point> freeUnblockedCells = new List<Point>();
         //temp random generator
         Random rnd = new Random();
 

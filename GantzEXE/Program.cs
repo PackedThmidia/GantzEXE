@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
-namespace GantZ
+namespace GantzEXE
 {
     class Program
     {
         static void Main(string[] args)
         {
+            bool startedFirst = false;
             CommMaper mapper = new CommMaper();
 
             //listen for size
@@ -34,7 +35,8 @@ namespace GantZ
             while (true)
             {
                 string opponentMove = Console.In.ReadLine();
-                if (opponentMove == "start") { 
+                if (opponentMove == "start") {
+                    startedFirst = true;
                     //board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
                     Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
                 }

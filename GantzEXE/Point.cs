@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GantZ
+namespace GantzEXE
 {
     class Point
     {
