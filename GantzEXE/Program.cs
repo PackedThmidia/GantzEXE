@@ -37,19 +37,22 @@ namespace GantzEXE
                 string opponentMove = Console.In.ReadLine();
                 if (opponentMove == "start") {
                     startedFirst = true;
-                    //board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
-                    Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
+
+                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove(startedFirst)));
                 }
                 else
                 {
+                   // DateTime startTime = DateTime.Now;
+
+
                     board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
-                    Console.Out.WriteLine(mapper.CreateMessageFromPoints(board.randomMove()));
+                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove(startedFirst)));
+
+                    //DateTime stopTime = DateTime.Now;
+                    //TimeSpan roznica = stopTime - startTime;
+                    //Console.WriteLine(roznica.ToString(@"ss\.ffff"));
                 }
                     
-                //fill board with opp movements
-                //find best move
-                //send best move
-                //listen for end and break loop if found
                 if (opponentMove == "end")
                     break;
             }

@@ -6,17 +6,13 @@ namespace GantzEXE
 {
     class CommMaper
     {
-
-        //send your move
-        //send ok
-        //listen on i/o for commands
-        //command list
-        //integer with map size
-        //initil obstacle list; {0;1},{2;2},{2;3}
-        //judge sends START or initial move {x,y},{x2,y2}
         public void SendOK()
         {
             Console.Out.WriteLine("ok");
+        }
+        public string CreateMessageFromMove(Move move)
+        {
+            return "{" + move.p1.X + ";" + move.p1.Y + "},{" + move.p2.X + ";" + move.p2.Y + "}";
         }
         public string CreateMessageFromPoints(List<Point> points)
         {
@@ -26,10 +22,6 @@ namespace GantzEXE
                 message += "{" + p.X + ";" + p.Y + "},";
             }
             return message.TrimEnd(','); ;
-        }
-        public string CreateMessageFromMove(Move move)
-        {
-            return "{" + move.p1.X + ";" + move.p1.Y + "},{" + move.p2.X + ";" + move.p2.Y + "}";
         }
         public List<Point> CreatePointListFromMessage(string message)
         {

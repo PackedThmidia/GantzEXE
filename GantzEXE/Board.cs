@@ -5,30 +5,33 @@ namespace GantzEXE
 {
     class Board
     {
-        bool[,] board;
-        int size;
+        public bool[,] board;
+        static int size;
+
         List<Point> occupiedCells = new List<Point>();
         List<Point> freeCells = new List<Point>();
         List<Point> freeBlockedCells = new List<Point>();
         List<Point> freeUnblockedCells = new List<Point>();
+
+
+       
         //temp random generator
         Random rnd = new Random();
 
-        public Board(int size)
+        public Board(int _size)
         {
-            this.size = size;
+            size = _size;
             InitBoard(size);
-
         }
         public void InitBoard(int size)
         {
             board = new bool[size,size];
-            //init with false value
         }
         public void InitBoardObstacles(List<Point> obstacles)
         {
             OccupyCells(obstacles);
             AddFreeCellsToList();
+            //calculate FreeBlocked and FreeUnblocked
         }
         public void OccupyCells(List<Point> points)
         {
@@ -39,9 +42,32 @@ namespace GantzEXE
                 board[p.X, p.Y] = true;
             }
         }
+        public void OccupyCells(Move move)
+        {
+            occupiedCells.Add(move.p1);
+            occupiedCells.Add(move.p2);
+            freeCells.Remove(move.p1);
+            freeCells.Remove(move.p2);
+            board[move.p1.X, move.p1.Y] = true;
+            board[move.p2.X, move.p2.Y] = true;
+            
+        }
         public bool isOccupied(Point p)
         {
             return board[p.X, p.Y];
+        }
+        public static int clampIndex(int index)
+        {
+            if (index < 0)
+                return size + index;
+            else if (index >= size)
+                return index % size;
+            return index;
+        }
+        public static Move FindMoveBorder(Move move)
+        {
+            //to be done
+            return move;
         }
         void AddFreeCellsToList()
         {
@@ -50,9 +76,34 @@ namespace GantzEXE
                     if (board[i, j] == false)
                         freeCells.Add(new Point(i, j));
         }
-        public List<Point> randomMove()
+        public Move nextMove(bool iStarted)
         {
-            List<Point> points = new List<Point>();
+           // if (freeCells.Count > 30)
+            //    return randomMove();
+            Move move;
+            int moves = AI.MovesToGameEnd(board, size, freeCells.Count, ref freeUnblockedCells);
+            bool isOdd = moves % 2 == 1 ? true : false;
+            bool input;
+            if (isOdd == iStarted)
+                input = false;
+            else input = true;
+            move = AI.GenerateMove(board, size, input, freeCells);
+            OccupyCells(move);
+            return move;
+        }
+
+
+
+
+
+
+
+
+
+
+        public Move randomMove()
+        {
+            Move move;
             //initial point
             Point p1 = null;
             Point p2 = null;
@@ -87,10 +138,9 @@ namespace GantzEXE
 
             freeCells.Remove(p1);
             freeCells.Remove(p2);
-            points.Add(p1);
-            points.Add(p2);
-            OccupyCells(points);
-            return points;
+            move = new Move(p1, p2);
+            OccupyCells(move);
+            return move;
         }
     }
 }
