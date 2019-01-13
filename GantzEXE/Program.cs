@@ -6,6 +6,11 @@ namespace GantzEXE
     {
         static void Main(string[] args)
         {
+            ///longer input
+            Console.SetIn(new StreamReader(Console.OpenStandardInput(16384)));
+            ///
+
+
             bool startedFirst = false;
             CommMaper mapper = new CommMaper();
 
@@ -20,7 +25,8 @@ namespace GantzEXE
             board.InitBoardObstacles(mapper.CreatePointListFromMessage(obstacles));
             mapper.SendOK();
 
-
+            //Console.WriteLine("Odd structures: " + board.TEST());
+            //Console.WriteLine("total moves: " + board.TestNumberOfMoves2());
 
 
             //TESTING
@@ -38,7 +44,7 @@ namespace GantzEXE
                 if (opponentMove == "start") {
                     startedFirst = true;
 
-                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove(startedFirst)));
+                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove()));
                 }
                 else
                 {
@@ -46,7 +52,7 @@ namespace GantzEXE
 
 
                     board.OccupyCells(mapper.CreatePointListFromMessage(opponentMove));
-                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove(startedFirst)));
+                    Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove()));
 
                     //DateTime stopTime = DateTime.Now;
                     //TimeSpan roznica = stopTime - startTime;

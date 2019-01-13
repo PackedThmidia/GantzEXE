@@ -15,5 +15,9 @@ namespace GantzEXE
             this.p1 = p1;
             this.p2 = p2;
         }
+        public override string ToString()
+        {
+            return "{" + p1.X + ";" + p1.Y + "}," + "{" + p2.X + ";" + p2.Y + "}";
+        }
     }
 }

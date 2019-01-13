@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 namespace GantzEXE
 {
     class Board
     {
         public bool[,] board;
-        static int size;
+        public static int size;
 
         List<Point> occupiedCells = new List<Point>();
         List<Point> freeCells = new List<Point>();
         List<Point> freeBlockedCells = new List<Point>();
         List<Point> freeUnblockedCells = new List<Point>();
 
-
-       
         //temp random generator
         Random rnd = new Random();
 
@@ -76,23 +75,35 @@ namespace GantzEXE
                     if (board[i, j] == false)
                         freeCells.Add(new Point(i, j));
         }
-        public Move nextMove(bool iStarted)
+        public Move nextMove()
         {
            // if (freeCells.Count > 30)
             //    return randomMove();
             Move move;
-            int moves = AI.MovesToGameEnd(board, size, freeCells.Count, ref freeUnblockedCells);
-            bool isOdd = moves % 2 == 1 ? true : false;
-            bool input;
-            if (isOdd == iStarted)
-                input = false;
-            else input = true;
-            move = AI.GenerateMove(board, size, input, freeCells);
+            // int unblocked = AI.MovesToGameEnd(board, size, freeCells, ref freeUnblockedCells);
+            int total = TestNumberOfMoves2();
+            bool isOdd = total % 2 == 0 ? true : false;
+            move = AI.GenerateMove(board, size, isOdd, freeCells);
             OccupyCells(move);
             return move;
         }
+        public int testnumberofmoves()
+        {
+            int unblocked = AI.MovesToGameEnd(board, size, freeCells, ref freeUnblockedCells);
+            int trios = TEST();
+            int total = ((unblocked - 3 * trios) / 2) + trios;
+            return total;
+        }
 
-
+        public int TEST()
+        {
+            freeUnblockedCells = freeCells.Except(freeBlockedCells).ToList();
+            return AI.NumberOfOddStructures(board, size, freeUnblockedCells);
+        }
+        public int TestNumberOfMoves2()
+        {
+            return AI.CalculateMaxMoves2(board, size, freeCells);
+        }
 
 
 
