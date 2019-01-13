@@ -11,7 +11,7 @@ namespace GantzEXE
             ///
 
 
-            bool startedFirst = false;
+
             CommMaper mapper = new CommMaper();
 
             //listen for size
@@ -42,7 +42,6 @@ namespace GantzEXE
             {
                 string opponentMove = Console.In.ReadLine();
                 if (opponentMove == "start") {
-                    startedFirst = true;
 
                     Console.Out.WriteLine(mapper.CreateMessageFromMove(board.nextMove()));
                 }

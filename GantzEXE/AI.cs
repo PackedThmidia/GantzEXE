@@ -9,39 +9,37 @@ namespace GantzEXE
     class AI
     {
 
-        public static int MovesToGameEnd(bool[,] board, int size,List<Point> freeCells, ref List<Point> freeBlockedCells)
+        public static int MovesToGameEnd(Board board)
         {
             int moves = 0;
             //friends to check
             Point[] friends = { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
-            foreach (Point p in freeCells) {
-                    if (board[p.X, p.Y] == false && !freeBlockedCells.Contains(p))
+            foreach (Point p in board.freeCells) {
+                    if (board.grid[p.X, p.Y] == false && board.freeBlockedCells.Contains(p))
                     {
                         bool freeBlocked = true;
                         foreach(Point friend in friends)
-                            if (board[Board.clampIndex(p.X + friend.X), Board.clampIndex(p.Y + friend.Y)] == false)
+                            if (board.grid[board.clampIndex(p.X + friend.X), board.clampIndex(p.Y + friend.Y)] == false)
                             {
                                 freeBlocked = false;
                                 break;
                             }
                     if (freeBlocked)
                     {
-                        freeBlockedCells.Add(p);
+                        board.freeBlockedCells.Add(p);
                     }
                 }
 
             }
-            moves = (freeCells.Count - freeBlockedCells.Count);
-            //debug
-            //Console.WriteLine("blocked cells: " + freeBlockedCellsCount);
+            moves = (board.freeCells.Count - board.freeBlockedCells.Count);
             return moves;
         }
-        public static int NumberOfOddStructures(bool[,] board, int size, List<Point> unBlockedCells)
+        public static int NumberOfOddStructures(Board board)
         {
             int oddStructures = 0;
             List<Point> visited = new List<Point>();
             Point[] friends = { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
-            foreach (Point p in unBlockedCells)
+            foreach (Point p in board.freeUnblockedCells)
             {
                 if (visited.Contains(p))
                     continue;
@@ -51,9 +49,9 @@ namespace GantzEXE
                 foreach (Point f in friends)
                 {
 
-                    if(board[Board.clampIndex(p.X + f.X),Board.clampIndex(p.Y + f.Y)] == false)
+                    if(board.grid[board.clampIndex(p.X + f.X),board.clampIndex(p.Y + f.Y)] == false)
                     {
-                        freeFriends.Add(new Point(Board.clampIndex(p.X + f.X), Board.clampIndex(p.Y + f.Y)));
+                        freeFriends.Add(new Point(board.clampIndex(p.X + f.X), board.clampIndex(p.Y + f.Y)));
                         friendsCount++;
                     }
                 }
@@ -64,8 +62,8 @@ namespace GantzEXE
                         int blockedFriends = 0;
                         foreach(Point f in friends)
                         {
-                            Point temp = new Point(Board.clampIndex(freeF.X + f.X), Board.clampIndex(freeF.Y + f.Y));
-                            if(!(temp == p) && board[temp.X, temp.Y] == true)
+                            Point temp = new Point(board.clampIndex(freeF.X + f.X), board.clampIndex(freeF.Y + f.Y));
+                            if(!(temp == p) && board.grid[temp.X, temp.Y] == true)
                             {
                                 blockedFriends++;
                             }
@@ -81,21 +79,21 @@ namespace GantzEXE
             }
             return oddStructures;
         }
-        public static Move GenerateMove(bool[,] board, int size, bool oddBlockedCells, List<Point> unblockedFreeCells)
+        public static Move GenerateMove(Board board, bool oddBlockedCells)
         {
             
             bool isOdd;
             Move move = new Move(null, null);
             Point[] nb = { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
-            foreach(Point p in unblockedFreeCells)
+            foreach(Point p in board.freeUnblockedCells)
             {
                 for(int i = 0; i < 3; i++)
                 {
-                    Point p2 = new Point(Board.clampIndex(p.X + nb[i].X), Board.clampIndex(p.Y + nb[i].Y));
-                    if(board[p2.X, p2.Y] == false)
+                    Point p2 = new Point(board.clampIndex(p.X + nb[i].X), board.clampIndex(p.Y + nb[i].Y));
+                    if(board.grid[p2.X, p2.Y] == false)
                     {
                         move = new Move(p, p2);
-                        isOdd = CheckIfNumberOfBlockedFreeCellsCreatedByMoveIsOdd(board, size, move, unblockedFreeCells);
+                        isOdd = CheckIfNumberOfBlockedFreeCellsCreatedByMoveIsOdd(board, move);
                         if (oddBlockedCells == isOdd)
                             return move;
                     }
@@ -105,7 +103,7 @@ namespace GantzEXE
 
             return move;
         }
-        public static bool CheckIfNumberOfBlockedFreeCellsCreatedByMoveIsOdd(bool[,] board, int size, Move move, List<Point> freeCells)
+        public static bool CheckIfNumberOfBlockedFreeCellsCreatedByMoveIsOdd(Board board, Move move)
         {
             int blockedFreeCells = 0;
             Point[] closeFriends = { new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1) };
@@ -113,16 +111,16 @@ namespace GantzEXE
             //Check close friends
             foreach(Point p in closeFriends)
             {
-                Point checkedFriend = new Point(Board.clampIndex(move.p1.X + p.X), Board.clampIndex(move.p1.Y + p.Y));
-                if(!checkedFriend.Equals(move.p2) && board[checkedFriend.X, checkedFriend.Y] == false)
+                Point checkedFriend = new Point(board.clampIndex(move.p1.X + p.X), board.clampIndex(move.p1.Y + p.Y));
+                if(!checkedFriend.Equals(move.p2) && board.grid[checkedFriend.X, checkedFriend.Y] == false)
                 {
                     //check close friends of that close friend
                     bool blockedCell = true;
                     foreach(Point pp in closeFriends)
                     {
-                        Point checkedFriendOfFriend = new Point(Board.clampIndex(checkedFriend.X + pp.X), Board.clampIndex(checkedFriend.Y + pp.Y));
+                        Point checkedFriendOfFriend = new Point(board.clampIndex(checkedFriend.X + pp.X), board.clampIndex(checkedFriend.Y + pp.Y));
                         if (checkedFriendOfFriend.Equals(move.p1)) continue;
-                        if(board[checkedFriendOfFriend.X, checkedFriendOfFriend.Y] == false)
+                        if(board.grid[checkedFriendOfFriend.X, checkedFriendOfFriend.Y] == false)
                         {
                             blockedCell = false;
                             break;
@@ -135,16 +133,16 @@ namespace GantzEXE
             //p2
             foreach (Point p in closeFriends)
             {
-                Point checkedFriend = new Point(Board.clampIndex(move.p2.X + p.X), Board.clampIndex(move.p2.Y + p.Y));
-                if (!checkedFriend.Equals(move.p1) && board[checkedFriend.X, checkedFriend.Y] == false)
+                Point checkedFriend = new Point(board.clampIndex(move.p2.X + p.X), board.clampIndex(move.p2.Y + p.Y));
+                if (!checkedFriend.Equals(move.p1) && board.grid[checkedFriend.X, checkedFriend.Y] == false)
                 {
                     //check close friends of that close friend
                     bool blockedCell = true;
                     foreach (Point pp in closeFriends)
                     {
-                        Point checkedFriendOfFriend = new Point(Board.clampIndex(checkedFriend.X + pp.X), Board.clampIndex(checkedFriend.Y + pp.Y));
+                        Point checkedFriendOfFriend = new Point(board.clampIndex(checkedFriend.X + pp.X), board.clampIndex(checkedFriend.Y + pp.Y));
                         if (checkedFriendOfFriend.Equals(move.p2)) continue;
-                        if (board[checkedFriendOfFriend.X, checkedFriendOfFriend.Y] == false)
+                        if (board.grid[checkedFriendOfFriend.X, checkedFriendOfFriend.Y] == false)
                         {
                             blockedCell = false;
                             break;
@@ -175,19 +173,19 @@ namespace GantzEXE
             //}
             else return false;
         }
-        public static int CalculateMaxMoves(bool[,] board, int size, List<Point> freeCells)
+        public static int CalculateMaxMoves(Board board)
         {
             int moves = 0;
             List<Point> visited = new List<Point>();
             Point[] friends = { new Point(-1, 0), new Point(0, -1), new Point(1, 0), new Point(0, 1) };
-            foreach (Point free in freeCells)
+            foreach (Point free in board.freeCells)
             {
                 if (visited.Contains(free))
                     continue;
                 for(int i = 0; i < 4; i++)
                 {
-                    Point temp = new Point(Board.clampIndex(free.X + friends[i].X), Board.clampIndex(free.Y + friends[i].Y));
-                    if(!visited.Contains(temp) && board[temp.X, temp.Y] == false)
+                    Point temp = new Point(board.clampIndex(free.X + friends[i].X), board.clampIndex(free.Y + friends[i].Y));
+                    if(!visited.Contains(temp) && board.grid[temp.X, temp.Y] == false)
                     {
                         moves++;
                         visited.Add(free); visited.Add(temp);
@@ -198,22 +196,22 @@ namespace GantzEXE
             
             return moves;
         }
-        public static int CalculateMaxMoves2(bool[,] board, int size, List<Point> freeCells)
+        public static int CalculateMaxMoves2(Board board)
         {
             int moves = 0;
             List<Point> visited = new List<Point>();
             Point[] friends = { new Point(-1, 0), new Point(0, -1), new Point(1, 0), new Point(0, 1) };
-            foreach (Point free in freeCells)
+            foreach (Point free in board.freeCells)
             {
                 if (visited.Contains(free))
                     continue;
                 for (int i = 0; i < 4; i++)
                 {
                     //border case, to be handled later
-                    if (free.X + friends[i].X < 0 || free.X + friends[i].X >= size || free.Y + friends[i].Y < 0 || free.Y + friends[i].Y >= size)
+                    if (free.X + friends[i].X < 0 || free.X + friends[i].X >= board.size || free.Y + friends[i].Y < 0 || free.Y + friends[i].Y >= board.size)
                         continue;
-                    Point temp = new Point(Board.clampIndex(free.X + friends[i].X), Board.clampIndex(free.Y + friends[i].Y));
-                    if (!visited.Contains(temp) && board[temp.X, temp.Y] == false)
+                    Point temp = new Point(board.clampIndex(free.X + friends[i].X), board.clampIndex(free.Y + friends[i].Y));
+                    if (!visited.Contains(temp) && board.grid[temp.X, temp.Y] == false)
                     {
                         moves++;
                         visited.Add(free); visited.Add(temp);
@@ -222,10 +220,10 @@ namespace GantzEXE
                 }
                 for (int i = 0; i < 4; i++)
                 {
-                    if (!(free.X + friends[i].X < 0 || free.X + friends[i].X >= size || free.Y + friends[i].Y < 0 || free.Y + friends[i].Y >= size))
+                    if (!(free.X + friends[i].X < 0 || free.X + friends[i].X >= board.size || free.Y + friends[i].Y < 0 || free.Y + friends[i].Y >= board.size))
                         continue;
-                    Point temp = new Point(Board.clampIndex(free.X + friends[i].X), Board.clampIndex(free.Y + friends[i].Y));
-                    if (!visited.Contains(temp) && board[temp.X, temp.Y] == false)
+                    Point temp = new Point(board.clampIndex(free.X + friends[i].X), board.clampIndex(free.Y + friends[i].Y));
+                    if (!visited.Contains(temp) && board.grid[temp.X, temp.Y] == false)
                     {
                         moves++;
                         visited.Add(free); visited.Add(temp);
