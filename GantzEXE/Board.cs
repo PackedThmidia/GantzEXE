@@ -68,8 +68,8 @@ namespace GantzEXE
             Move move;
             UpdateUnblockedFreeCellsList();
             // int unblocked = AI.MovesToGameEnd(board, size, freeCells, ref freeUnblockedCells);
-            int total = TestNumberOfMoves2();
-            bool isOdd = total % 2 == 0 ? true : false;
+            int total = AI.CalculateMaxMoves2(this);
+            bool isOdd = total % 2 == 0 ? false : true;
             move = AI.GenerateMove2(this, isOdd);
             OccupyCells(move);
 
@@ -80,10 +80,6 @@ namespace GantzEXE
         {
             AI.UpdateFreeBlockedCells(this);
             freeUnblockedCells = freeCells.Except(freeBlockedCells).ToList();
-        }
-        public int TestNumberOfMoves2()
-        {
-            return AI.CalculateMaxMoves2(this);
         }
         void AddFreeCellsToList()
         {
